@@ -2,6 +2,8 @@ package com.dealerstat.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -10,4 +12,8 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
+    @GetMapping("/hello")
+    public String showHelloWorld(){
+        return "<H1>Hello world!</H1>";
+    }
 }
