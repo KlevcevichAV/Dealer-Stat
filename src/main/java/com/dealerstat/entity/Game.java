@@ -1,4 +1,4 @@
-package com.dealerstat.model;
+package com.dealerstat.entity;
 
 public class Game {
     private int id;

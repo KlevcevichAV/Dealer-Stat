@@ -1,6 +1,6 @@
-package com.dealerstat.model;
+package com.dealerstat.entity;
 
-public class Admin {
+public class Dealer {
 
     private int id;
     private String firstName;
@@ -8,16 +8,16 @@ public class Admin {
     private String email;
     private String password;
     private String created_at;
-    private final Role role;
+    private Role role;
 
-    public Admin(int id, String firstName, String lastName, String email, String password, String created_at) {
+    public Dealer(int id, String firstName, String lastName, String email, String password, String created_at) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.created_at = created_at;
-        this.role = Role.ADMIN;
+        this.role = Role.DEALER;
     }
 
     public int getId() {
@@ -68,7 +68,7 @@ public class Admin {
         this.created_at = created_at;
     }
 
-    public String getRole() {
+    public String getRole(){
         return role.name();
     }
 }
