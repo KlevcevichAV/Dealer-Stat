@@ -6,26 +6,30 @@ import java.util.Set;
 public class Comment {
     private int id;
     private String message;
-    private int user_id;
+    private int userId;
     private String createdAt;
     private boolean approved;
-    private double appraisal;
+    private int appraisal;
     Set<Game> tags;
 
-    public Comment(int id, String message, int user_id, String createdAt, double appraisal) {
+    public Comment() {
+        tags = new HashSet<>();
+    }
+
+    public Comment(int id, String message, int userId, String createdAt, int appraisal) {
         this.id = id;
         this.message = message;
-        this.user_id = user_id;
+        this.userId = userId;
         this.createdAt = createdAt;
         approved = false;
         this.appraisal = appraisal;
         tags = new HashSet<>();
     }
 
-    public Comment(int id, String message, int user_id, String createdAt, double appraisal, Set<Game> tags) {
+    public Comment(int id, String message, int userId, String createdAt, int appraisal, Set<Game> tags) {
         this.id = id;
         this.message = message;
-        this.user_id = user_id;
+        this.userId = userId;
         this.createdAt = createdAt;
         this.approved = false;
         this.appraisal = appraisal;
@@ -48,12 +52,12 @@ public class Comment {
         this.message = message;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getCreatedAt() {
@@ -72,11 +76,11 @@ public class Comment {
         this.approved = approved;
     }
 
-    public double getAppraisal() {
+    public int getAppraisal() {
         return appraisal;
     }
 
-    public void setAppraisal(double appraisal) {
+    public void setAppraisal(int appraisal) {
         this.appraisal = appraisal;
     }
 

@@ -1,22 +1,26 @@
 package com.dealerstat.entity;
 
-public class Admin {
+public class User {
 
     private int id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-    private String created_at;
+    private String createdAt;
     private final Role role;
 
-    public Admin(int id, String firstName, String lastName, String email, String password, String created_at) {
+    public User() {
+        this.role = Role.ADMIN;
+    }
+
+    public User(int id, String firstName, String lastName, String email, String password, String createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
         this.role = Role.ADMIN;
     }
 
@@ -60,12 +64,12 @@ public class Admin {
         this.password = password;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(String created_at) {
+        this.createdAt = created_at;
     }
 
     public String getRole() {
