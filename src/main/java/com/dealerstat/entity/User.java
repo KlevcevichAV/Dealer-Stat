@@ -8,10 +8,13 @@ public class User {
     private String email;
     private String password;
     private String createdAt;
-    private final Role role;
+    private String role;
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public User() {
-        this.role = Role.ADMIN;
     }
 
     public User(int id, String firstName, String lastName, String email, String password, String createdAt) {
@@ -21,7 +24,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-        this.role = Role.ADMIN;
+        this.role = "ADMIN";
     }
 
     public int getId() {
@@ -73,6 +76,6 @@ public class User {
     }
 
     public String getRole() {
-        return role.name();
+        return role;
     }
 }

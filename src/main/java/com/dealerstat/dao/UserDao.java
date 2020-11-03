@@ -12,17 +12,19 @@ public class UserDao {
     public final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserDao(JdbcTemplate jdbcTemplate){
+    public UserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<User> getUsers(){
-        String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, new UserMapper());
+    public List<User> getUsers() {
+        String sql = "SELECT * FROM users WHERE role=?";
+        final String role = "DEALER";
+        return jdbcTemplate.query(sql, new UserMapper(), role);
     }
 
-    public User getUser(int id){
-        String sql = "SELECT * FROM users WHERE id=?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
+    public User getUser(int id) {
+        String sql = "SELECT * FROM users WHERE id=? AND role=?";
+        final String role = "DEALER";
+        return jdbcTemplate.queryForObject(sql, new UserMapper(), id, role);
     }
 }
