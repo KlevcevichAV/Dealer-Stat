@@ -13,11 +13,35 @@ public class UserService {
     @Autowired
     public UserDao userDao;
 
+    public void registration(User user) {
+        userDao.registration(user);
+    }
+
     public List<User> getUsers() {
         return userDao.getUsers();
     }
 
     public User getUser(int id) {
         return userDao.getUser(id);
+    }
+
+    public boolean edit(User user, User currentUser) {
+        if (user.getId() == currentUser.getId() && user.getId() != 0) {
+            if (user.getEmail()  == null) {
+                user.setEmail(currentUser.getEmail());
+            }
+            if (user.getFirstName() == null) {
+                user.setFirstName(currentUser.getFirstName());
+            }
+            if (user.getLastName() == null) {
+                user.setLastName(currentUser.getLastName());
+            }
+            userDao.edit(user);
+            return true;
+        } else return false;
+    }
+
+    public User logIn(User user) {
+        return userDao.logIn(user);
     }
 }

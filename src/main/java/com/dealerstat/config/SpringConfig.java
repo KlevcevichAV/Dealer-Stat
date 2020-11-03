@@ -38,4 +38,11 @@ public class SpringConfig {
         return new UserService();
     }
 
+    @Bean
+    public User getUser(){
+        User user = new User();
+        user.setRole("ANON");
+        return user;
+    }
+
 }
