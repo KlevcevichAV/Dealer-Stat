@@ -21,11 +21,6 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("/dealer-stat/dealer/{id}")
-    public User showDealer(@PathVariable int id) {
-        return userService.getUser(id);
-    }
-
     //!!!!!!!!
     @GetMapping("/dealer-stat/registration")
     public String createDealer() {

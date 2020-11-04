@@ -2,6 +2,7 @@ package com.dealerstat.dao;
 
 import com.dealerstat.entity.User;
 import com.dealerstat.mapper.UserMapper;
+import com.dealerstat.service.ThereIsNoSuchUserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -23,7 +24,11 @@ public class UserDao {
 
     public User getUser(int id) {
         String sql = "SELECT * FROM users WHERE id=? AND role=?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), id, "DEALER");
+        try{
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), id, "DEALER");
+        }catch (RuntimeException e){
+            throw new ThereIsNoSuchUserException();
+        }
     }
 
     // PASSWORD!!!!
