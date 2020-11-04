@@ -40,10 +40,10 @@ public class CommentsDao {
         return result;
     }
 
-    public Comment getComment(int id) {
-        String sql = "SELECT * FROM comments WHERE id=? AND approved=?";
+    public Comment getComment(int dealerId, int id) {
+        String sql = "SELECT * FROM comments WHERE id=? AND approved=? AND user_id=?";
         try {
-            Comment comment = jdbcTemplate.queryForObject(sql, new CommentMapper(), id, 1);
+            Comment comment = jdbcTemplate.queryForObject(sql, new CommentMapper(), id, 1, dealerId);
             return getTagsForComment(comment);
         }catch (RuntimeException e){
             throw new ThereIsNoSuchUserException();
