@@ -23,7 +23,7 @@ public class User {
     }
 
     public User() {
-
+        role = "ANON";
     }
 
     public User(int id, String firstName, String lastName, String email, String password, String createdAt) {

@@ -1,7 +1,10 @@
 package com.dealerstat.config;
 
+import com.dealerstat.dao.CommentsDao;
 import com.dealerstat.dao.UserDao;
+import com.dealerstat.entity.Comment;
 import com.dealerstat.entity.User;
+import com.dealerstat.service.CommentService;
 import com.dealerstat.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +46,16 @@ public class SpringConfig {
         User user = new User();
         user.setRole("ANON");
         return user;
+    }
+
+    @Bean
+    public CommentsDao getCommentDao(){
+        return new CommentsDao(getJDBCTemplate());
+    }
+
+    @Bean
+    public CommentService commentService(){
+        return new CommentService();
     }
 
 }
