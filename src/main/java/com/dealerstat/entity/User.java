@@ -9,6 +9,7 @@ public class User {
     private String password;
     private String createdAt;
     private String role;
+    private boolean approved;
 
     public void setRole(String role) {
         this.role = role;
@@ -86,5 +87,13 @@ public class User {
 
     public String getRole() {
         return role;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }

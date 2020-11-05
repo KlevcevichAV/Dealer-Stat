@@ -18,24 +18,24 @@ public class UserDao {
     }
 
     public List<User> getUsers() {
-        String sql = "SELECT * FROM users WHERE role=?";
-        return jdbcTemplate.query(sql, new UserMapper(), "DEALER");
+        String sql = "SELECT * FROM users WHERE role=? AND approved=?";
+        return jdbcTemplate.query(sql, new UserMapper(), "DEALER", 1);
     }
 
     public User getUser(int id) {
-        String sql = "SELECT * FROM users WHERE id=? AND role=?";
-        try{
-            return jdbcTemplate.queryForObject(sql, new UserMapper(), id, "DEALER");
-        }catch (RuntimeException e){
+        String sql = "SELECT * FROM users WHERE id=? AND role=? AND approved=?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), id, "DEALER", 1);
+        } catch (RuntimeException e) {
             throw new ThereIsNoSuchUserException();
         }
     }
 
     // PASSWORD!!!!
     public void registration(User user) {
-        String sql = "INSERT INTO users (first_name, last_name, email, password, role, created_at) VALUES (?,?,?,?,?,?)";
+        String sql = "INSERT INTO users (first_name, last_name, email, password, role, created_at, approved) VALUES (?,?,?,?,?,?,?)";
         jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user
-                .getEmail(), user.getPassword(), "DEALER", user.getCreatedAt());
+                .getEmail(), user.getPassword(), "DEALER", user.getCreatedAt(), 0);
     }
 
     public void edit(User user) {
@@ -44,7 +44,7 @@ public class UserDao {
     }
 
     public User logIn(User user) {
-        String sql = "SELECT DISTINCT * FROM users WHERE email=? AND password=?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), user.getEmail(), user.getPassword());
+        String sql = "SELECT DISTINCT * FROM users WHERE email=? AND password=? AND approved=?";
+        return jdbcTemplate.queryForObject(sql, new UserMapper(), user.getEmail(), user.getPassword(), 1);
     }
 }
