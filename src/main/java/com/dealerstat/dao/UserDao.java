@@ -45,6 +45,11 @@ public class UserDao {
 
     public User logIn(User user) {
         String sql = "SELECT DISTINCT * FROM users WHERE email=? AND password=? AND approved=?";
-        return jdbcTemplate.queryForObject(sql, new UserMapper(), user.getEmail(), user.getPassword(), 1);
+        try {
+            return jdbcTemplate.queryForObject(sql, new UserMapper(), user.getEmail(), user.getPassword(), 1);
+        }catch (RuntimeException e){
+            return null;
+        }
+
     }
 }
