@@ -1,5 +1,6 @@
 package com.dealerstat.controller;
 
+import com.dealerstat.entity.Comment;
 import com.dealerstat.entity.User;
 import com.dealerstat.service.AdminService;
 import com.dealerstat.service.ThereIsNoSuchUserException;
@@ -104,6 +105,40 @@ public class UserController {
     public void registrationDealerGuest(@RequestBody User user){
         if("ANON".equals(user.getRole())){
             userService.registrationDealerGuest(user);
+            return;
+        }
+        throw new ThereIsNoSuchUserException();
+    }
+
+    @GetMapping("/dealer-stat/unapproved-comment")
+    public List<Comment> getCommentsUnapproved(){
+        if("ADMIN".equals(user.getRole())){
+            return adminService.getCommentsForApproved();
+        }
+        throw new ThereIsNoSuchUserException();
+    }
+
+    @GetMapping("/dealer-stat/unapproved-comment/{id}")
+    public Comment getUnapprovedComment(@PathVariable int id){
+        if("ADMIN".equals(user.getRole())){
+            return adminService.getComment(id);
+        }
+        throw new ThereIsNoSuchUserException();
+    }
+
+    @PutMapping("/dealer-stat/comment-approved/{id}")
+    public void setCommentApproved(@PathVariable int id){
+        if("ADMIN".equals(user.getRole())){
+            adminService.setCommentApproved(id);
+            return;
+        }
+        throw new ThereIsNoSuchUserException();
+    }
+
+    @PutMapping("/dealer-stat/comment-unapproved/{id}")
+    public void setCommentUnapproved(@PathVariable int id){
+        if("ADMIN".equals(user.getRole())){
+            adminService.setCommentUnapproved(id);
             return;
         }
         throw new ThereIsNoSuchUserException();

@@ -1,6 +1,7 @@
 package com.dealerstat.service;
 
 import com.dealerstat.dao.AdminDao;
+import com.dealerstat.entity.Comment;
 import com.dealerstat.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,5 +26,21 @@ public class AdminService {
 
     public void setDealerUnapproved(int id){
         adminDao.setDealerUnapproved(id);
+    }
+
+    public List<Comment> getCommentsForApproved() {
+        return adminDao.getCommentsForApproved();
+    }
+
+    public Comment getComment(int id) {
+        return adminDao.getComment(id);
+    }
+
+    public void setCommentApproved(int id){
+        adminDao.setCommentApproved(id);
+    }
+
+    public void setCommentUnapproved(int id){
+        adminDao.setCommentUnapproved(id);
     }
 }
