@@ -44,4 +44,8 @@ public class UserService {
     public User logIn(User user) {
         return userDao.logIn(user);
     }
+
+    public void registrationDealerGuest(User user){
+        userDao.registrationGuest(user);
+    }
 }

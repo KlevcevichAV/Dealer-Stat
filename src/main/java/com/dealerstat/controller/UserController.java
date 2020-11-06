@@ -82,7 +82,7 @@ public class UserController {
         throw new ThereIsNoSuchUserException();
     }
 
-    @PostMapping("/dealer-stat/dealer-approved/{id}")
+    @PutMapping("/dealer-stat/dealer-approved/{id}")
     public void setDealerApproved(@PathVariable int id){
         if("ADMIN".equals(user.getRole())){
             adminService.setDealerApproved(id);
@@ -91,10 +91,19 @@ public class UserController {
         throw new ThereIsNoSuchUserException();
     }
 
-    @PostMapping("/dealer-stat/dealer-unapproved/{id}")
+    @PutMapping("/dealer-stat/dealer-unapproved/{id}")
     public void setDealerUnapproved(@PathVariable int id){
         if("ADMIN".equals(user.getRole())){
             adminService.setDealerUnapproved(id);
+            return;
+        }
+        throw new ThereIsNoSuchUserException();
+    }
+
+    @PostMapping(value = "/dealer-stat/registration-dealer-guest", consumes = "application/json", produces = "application/json")
+    public void registrationDealerGuest(@RequestBody User user){
+        if("ANON".equals(user.getRole())){
+            userService.registrationDealerGuest(user);
             return;
         }
         throw new ThereIsNoSuchUserException();
