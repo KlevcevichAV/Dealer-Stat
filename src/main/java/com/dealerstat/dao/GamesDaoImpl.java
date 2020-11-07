@@ -1,4 +1,4 @@
 package com.dealerstat.dao;
 
-public interface GamesDao {
+public class GamesDaoImpl {
 }

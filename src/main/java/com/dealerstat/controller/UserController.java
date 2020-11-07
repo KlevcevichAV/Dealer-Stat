@@ -2,10 +2,9 @@ package com.dealerstat.controller;
 
 import com.dealerstat.entity.Comment;
 import com.dealerstat.entity.User;
-import com.dealerstat.service.AdminService;
-import com.dealerstat.service.ThereIsNoSuchUserException;
-import com.dealerstat.service.UserService;
+import com.dealerstat.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    @Qualifier("getUserService")
     @Autowired
     public UserService userService;
 
@@ -62,9 +62,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/dealer-stat/registration", consumes = "application/json", produces = "application/json")
-    public String registrationDealer(@RequestBody User user) {
-        userService.registration(user);
-        return "redirect:/dealer-stat/dealer";
+    public String registrationDealer(@RequestBody User user) throws Exception {
+        return userService.registration(user);
     }
 
     @GetMapping("/dealer-stat/unapproved-dealer")
@@ -102,10 +101,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/dealer-stat/registration-dealer-guest", consumes = "application/json", produces = "application/json")
-    public void registrationDealerGuest(@RequestBody User user){
+    public String registrationDealerGuest(@RequestBody User user){
         if("ANON".equals(user.getRole())){
-            userService.registrationDealerGuest(user);
-            return;
+            return userService.registrationDealerGuest(user);
         }
         throw new ThereIsNoSuchUserException();
     }

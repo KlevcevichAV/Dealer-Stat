@@ -1,25 +1,13 @@
 package com.dealerstat.service;
 
-import com.dealerstat.dao.CommentsDao;
-import com.dealerstat.dao.UserDao;
 import com.dealerstat.entity.Comment;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class CommentService {
-    @Autowired
-    public CommentsDao commentsDao;
+public interface CommentService {
+    public List<Comment> getCommentsDealer(int userId);
 
-    public List<Comment> getCommentsDealer(int userId){
-        return commentsDao.getCommentsDealer(userId);
-    }
+    public Comment getComment(int dealerId,int id);
 
-    public Comment getComment(int dealerId,int id){
-        return commentsDao.getComment(dealerId, id);
-    }
-
-    public void addComment(Comment comment){
-        commentsDao.addComment(comment);
-    }
+    public void addComment(Comment comment);
 }

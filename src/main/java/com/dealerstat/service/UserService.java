@@ -1,51 +1,20 @@
 package com.dealerstat.service;
 
-import com.dealerstat.dao.UserDao;
 import com.dealerstat.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class UserService {
+public interface UserService {
 
-    @Autowired
-    public UserDao userDao;
+    String registration(User user) throws Exception;
 
-    public void registration(User user) {
-        userDao.registration(user);
-    }
+    List<User> getUsers();
 
-    public List<User> getUsers() {
-        return userDao.getUsers();
-    }
+    User getUser(int id);
 
-    public User getUser(int id) {
-        return userDao.getUser(id);
-    }
+    boolean edit(User user, User currentUser);
 
-    public boolean edit(User user, User currentUser) {
-        if (user.getId() == currentUser.getId() && user.getId() != 0) {
-            if (user.getEmail()  == null) {
-                user.setEmail(currentUser.getEmail());
-            }
-            if (user.getFirstName() == null) {
-                user.setFirstName(currentUser.getFirstName());
-            }
-            if (user.getLastName() == null) {
-                user.setLastName(currentUser.getLastName());
-            }
-            userDao.edit(user);
-            return true;
-        } else return false;
-    }
+    User logIn(User user);
 
-    public User logIn(User user) {
-        return userDao.logIn(user);
-    }
-
-    public void registrationDealerGuest(User user){
-        userDao.registrationGuest(user);
-    }
+    String registrationDealerGuest(User user);
 }

@@ -12,10 +12,10 @@ public class CommentController {
     @Autowired
     public CommentService commentService;
 
-//    @GetMapping("/dealer-stat/dealer/{id}/comments")
-//    public List<Comment> getComments(@PathVariable int id) {
-//        return commentService.getCommentsDealer(id);
-//    }
+    @GetMapping("/dealer-stat/dealer/{id}/comments")
+    public List<Comment> getComments(@PathVariable int id) {
+        return commentService.getCommentsDealer(id);
+    }
 
     @GetMapping("/dealer-stat/dealer/{dealer_id}/comments/{id}")
     public Comment getComment(@PathVariable int id, @PathVariable int dealer_id) {
