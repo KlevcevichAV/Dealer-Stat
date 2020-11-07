@@ -1,39 +1,22 @@
 package com.dealerstat.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String message;
+    @Column(name = "user_id")
     private int userId;
+    @Column(name = "created_at")
     private String createdAt;
     private boolean approved;
     private int appraisal;
-    Set<Game> tags;
 
     public Comment() {
-        tags = new HashSet<>();
-    }
-
-    public Comment(int id, String message, int userId, String createdAt, int appraisal) {
-        this.id = id;
-        this.message = message;
-        this.userId = userId;
-        this.createdAt = createdAt;
-        approved = false;
-        this.appraisal = appraisal;
-        tags = new HashSet<>();
-    }
-
-    public Comment(int id, String message, int userId, String createdAt, int appraisal, Set<Game> tags) {
-        this.id = id;
-        this.message = message;
-        this.userId = userId;
-        this.createdAt = createdAt;
-        this.approved = false;
-        this.appraisal = appraisal;
-        this.tags = tags;
     }
 
     public int getId() {
@@ -84,11 +67,4 @@ public class Comment {
         this.appraisal = appraisal;
     }
 
-    public Set<Game> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Game> tags) {
-        this.tags = tags;
-    }
 }
