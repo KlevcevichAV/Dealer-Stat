@@ -47,9 +47,4 @@ public class Password {
         );
         return Base64.encodeBase64String(key.getEncoded());
     }
-
-    public static void main(String[] args) throws Exception {
-        String pas = "123";
-        System.out.println(getSaltedHash(pas));
-    }
 }
