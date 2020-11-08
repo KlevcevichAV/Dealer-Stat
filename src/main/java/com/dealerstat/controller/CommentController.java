@@ -1,32 +1,56 @@
 package com.dealerstat.controller;
 
-import com.dealerstat.entity.Comment;
-import com.dealerstat.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dealerstat.entity.Game;
+import com.dealerstat.entity.profile.comment.CommentWithTags;
+import com.dealerstat.repository.GameRepository;
+import com.dealerstat.service.CommentServiceImpl;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 public class CommentController {
-    @Autowired
-    public CommentService commentService;
+    private final CommentServiceImpl commentService;
 
-    @GetMapping("/dealer-stat/dealer/{id}/comments")
-    public List<Comment> getComments(@PathVariable int id) {
-        return commentService.getCommentsDealer(id);
+    private final GameRepository gameRepository;
+
+    public CommentController(CommentServiceImpl commentService, GameRepository gameRepository) {
+        this.commentService = commentService;
+        this.gameRepository = gameRepository;
     }
 
-    @GetMapping("/dealer-stat/dealer/{dealer_id}/comments/{id}")
-    public Comment getComment(@PathVariable int id, @PathVariable int dealer_id) {
-        return commentService.getComment(dealer_id, id);
+    @GetMapping("/dealer/{id}/comments")
+    public String getComments(@PathVariable int id, Model model) {
+        List<CommentWithTags> comments = commentService.getCommentsDealer(id);
+        model.addAttribute("comments", comments);
+        return "lists/comments";
+
     }
 
-    @PostMapping(value = "/dealer-stat/dealer/{id}/createComment", consumes = "application/json", produces = "application/json")
-    public String addComment(@RequestBody Comment comment, @PathVariable int id) {
-        comment.setUserId(id);
-        commentService.addComment(comment);
-        return "redirect:/dealer-stat/dealer";
+    @GetMapping("/dealer/{dealer_id}/comments/{id}")
+    public String getComment(@PathVariable int id, @PathVariable int dealer_id, Model model) {
+        CommentWithTags comment = commentService.getComment(dealer_id, id);
+        model.addAttribute("comment", comment);
+        return "comment";
+    }
+
+    @GetMapping("/dealer/{id}/createComment")
+    public String showAddCommentsPage(@PathVariable String id, Model model) {
+        model.addAttribute("id", id);
+        return "create/addComment";
+    }
+
+
+    @PostMapping("/dealer/{id}/createComment")
+    public String addComment(@RequestBody CommentWithTags comment, @PathVariable int id) {
+        comment.getComment().setUserId(id);
+        commentService.addComment(comment.getComment());
+        for (Game game : comment.getTags()) {
+            gameRepository.save(game);
+        }
+        return "redirect:/dealer/{id}";
     }
 
 }
