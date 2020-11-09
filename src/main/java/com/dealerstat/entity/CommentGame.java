@@ -1,7 +1,18 @@
 package com.dealerstat.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "comment_game")
 public class CommentGame {
+    @Id
+    private int id;
+    @Column(name = "comment_id")
     private int commentId;
+    @Column(name = "game_id")
     private int gameId;
 
     public CommentGame() {
@@ -21,5 +32,13 @@ public class CommentGame {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

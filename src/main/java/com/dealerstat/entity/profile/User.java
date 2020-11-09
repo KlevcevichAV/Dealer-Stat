@@ -1,7 +1,7 @@
-package com.dealerstat.entity;
+package com.dealerstat.entity.profile;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,10 +19,11 @@ public class User {
     private String password;
     @Column(name = "created_at")
     private String createdAt;
-    @Column(name = "role")
-    private String role;
     @Column(name = "approved")
     private boolean approved;
+
+    private String role;
+
 
     public User() {
     }
@@ -75,6 +76,14 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
     public String getRole() {
         return role;
     }
@@ -83,11 +92,4 @@ public class User {
         this.role = role;
     }
 
-    public boolean isApproved() {
-        return approved;
-    }
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
 }

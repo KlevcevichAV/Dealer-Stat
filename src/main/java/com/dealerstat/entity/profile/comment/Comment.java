@@ -1,4 +1,4 @@
-package com.dealerstat.entity;
+package com.dealerstat.entity.profile.comment;
 
 import javax.persistence.*;
 
