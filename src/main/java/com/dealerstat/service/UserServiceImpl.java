@@ -1,52 +1,67 @@
 package com.dealerstat.service;
 
-import com.dealerstat.dao.UserDao;
-import com.dealerstat.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dealerstat.entity.profile.User;
+import com.dealerstat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl {
+    private final String PREFIX = "ROLE_";
+    private final UserRepository userRepository;
 
-    @Autowired
-    public UserDao userDao;
-
-    public String registration(User user) throws Exception {
-        return userDao.registration(user);
-
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<User> getUsers() {
-        return userDao.getUsers();
+        return userRepository.findAllByApprovedAndRole(true, "DEALER");
     }
 
     public User getUser(int id) {
-        return userDao.getUser(id);
+        return userRepository.findByIdAndRoleAndApproved(id, "DEALER", true);
     }
 
-    public boolean edit(User user, User currentUser) {
-        if (user.getId() == currentUser.getId() && user.getId() != 0) {
-            if (user.getEmail()  == null) {
-                user.setEmail(currentUser.getEmail());
-            }
-            if (user.getFirstName() == null) {
-                user.setFirstName(currentUser.getFirstName());
-            }
-            if (user.getLastName() == null) {
-                user.setLastName(currentUser.getLastName());
-            }
-            userDao.edit(user);
-            return true;
-        } else return false;
+    public void edit(User user) {
+        User userFromDB = userRepository.findByEmail(user.getEmail());
+        userFromDB.setFirstName(user.getFirstName());
+        userFromDB.setLastName(user.getLastName());
+        if (userFromDB != null) {
+            userRepository.save(user);
+            return;
+        }
     }
 
-    public User logIn(User user) {
-        return userDao.logIn(user);
+    public boolean registration(User user) {
+        User userFromDB = userRepository.findByEmail(user.getEmail());
+
+        if (Objects.nonNull(userFromDB)) {
+            return false;
+        }
+
+        if (Objects.isNull(user.getFirstName()) || Objects.isNull(user.getLastName())){
+            return false;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        user.setCreatedAt(calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + '-' + calendar.get(Calendar.DAY_OF_MONTH));
+        user.setRole(PREFIX + "DEALER");
+//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+        userRepository.save(user);
+        return true;
     }
 
-    public String registrationDealerGuest(User user){
-        return userDao.registrationGuest(user);
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
+
+    public List<User> findAll() {
+        return (List<User>) userRepository.findAll();
+    }
+
 }

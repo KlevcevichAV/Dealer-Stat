@@ -1,25 +1,63 @@
 package com.dealerstat.service;
 
-import com.dealerstat.dao.CommentsDao;
-import com.dealerstat.dao.CommentsDaoImpl;
-import com.dealerstat.entity.Comment;
+import com.dealerstat.entity.CommentGame;
+import com.dealerstat.entity.Game;
+import com.dealerstat.entity.profile.comment.Comment;
+import com.dealerstat.entity.profile.comment.CommentWithTags;
+import com.dealerstat.repository.CommentGameRepository;
+import com.dealerstat.repository.CommentRepository;
+import com.dealerstat.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class CommentServiceImpl implements CommentService{
+@Service
+public class CommentServiceImpl {
+
+    private final CommentRepository commentRepository;
+
+    public CommentServiceImpl(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
+    private CommentGameRepository commentGameRepository;
+
     @Autowired
-    public CommentsDao commentsDao;
-
-    public List<Comment> getCommentsDealer(int userId){
-        return commentsDao.getCommentsDealer(userId);
+    public void setCommentGameRepository(CommentGameRepository commentGameRepository) {
+        this.commentGameRepository = commentGameRepository;
     }
 
-    public Comment getComment(int dealerId,int id){
-        return commentsDao.getComment(dealerId, id);
+    private GameRepository gameRepository;
+
+    @Autowired
+    public void setGameRepository(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
 
-    public void addComment(Comment comment){
-        commentsDao.addComment(comment);
+    public List<CommentWithTags> getCommentsDealer(int userId) {
+        List<Comment> commentList = commentRepository.findByUserIdAndApproved(userId, true);
+        List<CommentWithTags> result = new ArrayList<>();
+        for (Comment comment : commentList) {
+            result.add(getComment(userId, comment.getId()));
+        }
+        return result;
+    }
+
+    public CommentWithTags getComment(int dealerId, int id) {
+        Comment comment = commentRepository.findByIdAndUserIdAndApproved(id, dealerId, true);
+        Set<Game> tags = new HashSet<>();
+        for (CommentGame cg : commentGameRepository.findByCommentId(id)) {
+            tags.add(gameRepository.findById(cg.getGameId()));
+        }
+        return new CommentWithTags(comment, tags);
+    }
+
+    //
+    public void addComment(Comment comment) {
+        commentRepository.save(comment);
     }
 }
