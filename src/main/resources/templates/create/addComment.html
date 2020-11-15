@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Тег INPUT</title>
+</head>
+<body>
+
+<form name="comment" th:action="'/dealer/' + ${id} + '/createComment'" method="post">
+    <p th:name="comment.userId" th:value="${id}"></p>
+    <select th:name="comment.appraisal" appraisal>
+        <option appraisal>1 star</option>
+        <option appraisal>2 stars</option>
+        <option appraisal>3 stars</option>
+        <option appraisal>4 stars</option>
+        <option appraisal>5 stars</option>
+    </select>
+    <p>tags<Br>
+        <textarea th:name="tags" cols="40" rows="3"></textarea></p>
+    <p>message<Br>
+        <textarea th:name="comment.message" cols="40" rows="3"></textarea></p>
+    <p><input type="submit" value="Send">
+        <input type="reset" value="Cancel"></p>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Application</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Profile</h1>
+    <h3>Dealer</h3>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <td>ID</td>
+            <td>First name</td>
+            <td>Last name</td>
+            <td>email</td>
+            <td>Average rating</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${profile.user.id}"/>
+            <td th:text="${profile.user.firstName}"/>
+            <td th:text="${profile.user.lastName}"/>
+            <td th:text="${profile.user.email}"/>
+            <td th:if="${profile.averageRating != -1}" th:text="${profile.averageRating}"/>
+            <td><a th:if="${profile.averageRating == -1}">-</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <h3>Comments</h3>
+    <span th:if="${profile.getUserComments().size() == 0}">Comments List is empty</span>
+    <table th:if="${profile.getUserComments().size() > 0}" class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <td>ID</td>
+            <td>Message</td>
+            <td>Appraisal</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${profile.getUserComments()}">
+            <td th:text="${comment.getComment().id}"/>
+            <td th:text="${comment.getComment().message}"/>
+            <td th:text="${comment.getComment().appraisal}"/>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/dealer"> go to dealers</a>
+</div>
+</body>
+</html>

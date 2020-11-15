@@ -1,20 +1,16 @@
 package com.dealerstat.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "games")
 public class Game {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
 
     public Game() {
-    }
-
-    public Game(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Game(String name) {
-        id = -1;
-        this.name = name;
     }
 
     public int getId() {

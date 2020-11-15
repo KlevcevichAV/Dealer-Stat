@@ -1,40 +1,31 @@
-package com.dealerstat.entity;
+package com.dealerstat.entity.profile;
 
+import javax.persistence.*;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
+    @Column(name = "created_at")
     private String createdAt;
-    private String role;
+    @Column(name = "approved")
     private boolean approved;
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+    private String role;
 
-    public User(String firstName, String lastName, String email, String password, String createdAt) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.createdAt = createdAt;
-    }
 
     public User() {
-        role = "ANON";
-    }
-
-    public User(int id, String firstName, String lastName, String email, String password, String createdAt) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.createdAt = createdAt;
-        this.role = "ADMIN";
     }
 
     public int getId() {
@@ -81,12 +72,8 @@ public class User {
         return createdAt;
     }
 
-    public void setCreatedAt(String created_at) {
-        this.createdAt = created_at;
-    }
-
-    public String getRole() {
-        return role;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean isApproved() {
@@ -96,4 +83,13 @@ public class User {
     public void setApproved(boolean approved) {
         this.approved = approved;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }
