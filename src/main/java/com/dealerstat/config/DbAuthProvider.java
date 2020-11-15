@@ -1,7 +1,8 @@
 package com.dealerstat.config;
 
+import com.dealerstat.entity.profile.Password;
 import com.dealerstat.entity.profile.User;
-import com.dealerstat.service.UserServiceImpl;
+import com.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,13 +20,14 @@ import java.util.Objects;
 @Component
 public class DbAuthProvider implements AuthenticationProvider {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public DbAuthProvider(UserServiceImpl userService) {
+    public DbAuthProvider(UserService userService) {
         this.userService = userService;
     }
 
+    @lombok.SneakyThrows
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
@@ -33,14 +35,21 @@ public class DbAuthProvider implements AuthenticationProvider {
 
         User user = userService.findUserByEmail(email);
 
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new BadCredentialsException("Invalid email");
         }
 
-        if (!Objects.equals(password, user.getPassword())) {
+        if (Password.check(Password.getSaltedHash(password), user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
 
+        if (Objects.isNull(user.getApproved()) && Objects.equals(user.getRole(), "ROLE_DEALER")) {
+            throw new BadCredentialsException("Mail not confirmed");
+        }
+
+        if (!user.getApproved() && Objects.equals(user.getRole(), "ROLE_DEALER")) {
+            throw new BadCredentialsException("Profile not approved");
+        }
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
         return new UsernamePasswordAuthenticationToken(email, password, authorities);
