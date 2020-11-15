@@ -3,69 +3,74 @@ package com.dealerstat.controller;
 import com.dealerstat.entity.profile.User;
 import com.dealerstat.entity.profile.comment.Comment;
 import com.dealerstat.entity.profile.comment.CommentWithTags;
-import com.dealerstat.service.AdminServiceImpl;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import com.dealerstat.service.AdminService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class AdminController {
-    public final AdminServiceImpl adminService;
+    public final AdminService adminService;
 
-    public AdminController(AdminServiceImpl adminService) {
+    @Autowired
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @GetMapping("/admin/unapproved-dealer")
-    public String getDealersUnapproved(Model model) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<User> getDealersUnapproved() {
         List<User> dealersUnapproved = adminService.getUsersForApproved();
-        model.addAttribute("dealersUnapproved", dealersUnapproved);
-        return "dealersUnapproved";
+        return dealersUnapproved;
     }
 
     @GetMapping("/admin/unapproved-dealer/{id}")
-    public String getUnapprovedUser(@PathVariable int id, Model model) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public User getUnapprovedUser(@PathVariable int id) {
         User unapprovedDealer = adminService.getUserForApproved(id);
-        model.addAttribute("unapprovedDealer", unapprovedDealer);
-        return "unapprovedDealer";
+        return unapprovedDealer;
     }
 
     @PutMapping("/admin/dealer-approved/{id}")
-    public String setDealerApproved(@PathVariable int id) {
-        adminService.setDealerApproved(id);
-        return "redirect:/admin/unapproved-dealer";
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public User setDealerApproved(@PathVariable int id) {
+        return adminService.approveDealer(id);
     }
 
     @PutMapping("/admin/dealer-unapproved/{id}")
-    public void setDealerUnapproved(@PathVariable int id) {
-        adminService.setDealerUnapproved(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public User setDealerUnapproved(@PathVariable int id) {
+        return adminService.declineDealer(id);
     }
 
     @GetMapping("/admin/unapproved-comment")
-    public String getCommentsUnapproved(Model model) {
-        List<Comment> unapprovedComment = adminService.getCommentsForApproved();
-        model.addAttribute("unapprovedComments", unapprovedComment);
-        return "unapprovedComments";
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<Comment> getCommentsUnapproved() {
+        List<Comment> unapprovedComment = adminService.findCommentsForApproved();
+        return unapprovedComment;
     }
 
     @GetMapping("/admin/unapproved-comment/{id}")
-    public String getUnapprovedComment(@PathVariable int id, Model model) {
-        CommentWithTags comment = adminService.getComment(id);
-        model.addAttribute("unapprovedComment", comment);
-        return "unapprovedComment";
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public CommentWithTags getUnapprovedComment(@PathVariable int id) {
+        CommentWithTags comment = adminService.findCommentById(id);
+        return comment;
     }
 
     @PutMapping("/admin/comment-approved/{id}")
-    public void setCommentApproved(@PathVariable int id) {
-        adminService.setCommentApproved(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Comment setCommentApproved(@PathVariable int id) {
+        return adminService.approveComment(id);
     }
 
     @PutMapping("/admin/comment-unapproved/{id}")
-    public void setCommentUnapproved(@PathVariable int id) {
-        adminService.setCommentUnapproved(id);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Comment setCommentUnapproved(@PathVariable int id) {
+        return adminService.declineComment(id);
     }
 }

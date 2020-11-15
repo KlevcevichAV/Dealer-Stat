@@ -1,33 +1,30 @@
 package com.dealerstat.controller;
 
 import com.dealerstat.entity.profile.User;
-import com.dealerstat.service.UserServiceImpl;
+import com.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/registration")
 public class RegistrationController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public RegistrationController(UserServiceImpl userService) {
+    public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public String registration() {
-        return "create/registration";
-    }
-
-    @PostMapping
-    public String createRegistration(@RequestBody User newUser) {
-        userService.registration(newUser);
-        return "redirect:/dealer";
+    public String createRegistration(@RequestBody User newUser) throws Exception {
+        if (userService.registration(newUser)) {
+            return "Registration!";
+        } else {
+            return "Ops...";
+        }
     }
 }

@@ -2,61 +2,66 @@ package com.dealerstat.controller;
 
 import com.dealerstat.entity.profile.Profile;
 import com.dealerstat.entity.profile.User;
-import com.dealerstat.response.UserResponse;
-import com.dealerstat.service.ProfileServiceImpl;
-import com.dealerstat.service.UserServiceImpl;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
+import com.dealerstat.redis.DealerToken;
+import com.dealerstat.redis.VerificationToken;
+import com.dealerstat.repository.DealerTokenRepository;
+import com.dealerstat.service.ProfileService;
+import com.dealerstat.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-@Controller
+@RestController
 public class ProfileController {
 
-    public final ProfileServiceImpl profileService;
-    public final UserServiceImpl userService;
+    private final ProfileService profileService;
+    private final UserService userService;
+    private final DealerTokenRepository dealerTokenRepository;
 
-    public ProfileController(ProfileServiceImpl profileService, UserServiceImpl userService) {
+    @Autowired
+    public ProfileController(ProfileService profileService, UserService userService, DealerTokenRepository dealerTokenRepository) {
         this.profileService = profileService;
         this.userService = userService;
+        this.dealerTokenRepository = dealerTokenRepository;
     }
 
     @GetMapping("/dealer")
-    public String showDealers(Model model) {
-        List<Profile> dealers = profileService.getProfiles();
+    public List<Profile> showDealers(Model model) {
+        List<Profile> dealers = profileService.findProfiles();
         model.addAttribute("dealers", dealers);
-        return "lists/dealers";
+        return dealers;
     }
 
     @GetMapping("/editProfile")
-    public String editProfile(@RequestBody Profile profile) {
+    public void editProfile(@RequestBody Profile profile) {
         profileService.editProfile(profile);
-        return "redirect:/dealer/" + profile.getUser().getId();
+//        return "redirect:/dealer/" + profile.getUser().getId();
     }
 
     @GetMapping("/dealer/{id}")
-    public String showDealer(@PathVariable int id, Model model) {
-        Profile profile = profileService.getProfile(id);
+    public Profile showDealer(@PathVariable int id, Model model) {
+        Profile profile = profileService.findProfileById(id);
         model.addAttribute("profile", profile);
-        return "entity/profile";
+        return profile;
     }
 
     @GetMapping("/dealer/top")
-    public String showTopDealers(Model model) {
-        List<Profile> dealers = profileService.getTopProfiles();
+    public List<Profile> showTopDealers(Model model) {
+        List<Profile> dealers = profileService.findTopProfiles();
         model.addAttribute("topDealers", dealers);
-        return "lists/topDealers";
+        return dealers;
     }
 
     @GetMapping("/dealer/topTags")
     public List<Profile> showTopDealersTags(@RequestBody Set<String> tags, Model model) {
-        List<Profile> dealers = profileService.getTopProfilesTags(tags);
+        List<Profile> dealers = profileService.findTopProfilesTags(tags);
         model.addAttribute("topDealers", dealers);
         model.addAttribute("tag", tags);
         return dealers;
@@ -64,7 +69,7 @@ public class ProfileController {
 
     @GetMapping("/dealer/max")
     public List<Profile> getMaxDealers(@RequestBody int max, Model model) {
-        List<Profile> dealers = profileService.getMaxDealers(max);
+        List<Profile> dealers = profileService.findMaxDealers(max);
         model.addAttribute("maxDealers", dealers);
         return dealers;
     }
@@ -77,20 +82,26 @@ public class ProfileController {
     }
 
     @GetMapping("/dealer/minAndMax")
-    public List<Profile> getMinDealers(@RequestBody int ratings[], Model model) {
+    public List<Profile> getMinAndMaxDealers(@RequestBody int ratings[], Model model) {
         List<Profile> dealers = profileService.getMinAndMaxDealers(ratings[0], ratings[1]);
         model.addAttribute("maxAndMinDealers", dealers);
         return dealers;
     }
 
-    @GetMapping("/")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserResponse> readAll() {
-        List<User> users = userService.findAll();
-        List<UserResponse> userResponses = new ArrayList<>();
-        for(User user : users){
-            userResponses.add(new UserResponse(user.getId(), user.getEmail(), user.getFirstName()));
+    @GetMapping("/activate/{code}")
+    public String activateProfile(@PathVariable String code) {
+        DealerToken dealerToken = dealerTokenRepository.findById(code).get();
+        if (Objects.isNull(dealerToken)) return "-";
+        User user = userService.findUserByEmail(dealerToken.getEmail());
+        if (Objects.isNull(user)) return "doesn't activate";
+        VerificationToken newVerificationToken = new VerificationToken();
+        VerificationToken oldVerificationToken = new VerificationToken(code);
+        if (newVerificationToken.checkToken(oldVerificationToken)) {
+            user.setApproved(false);
+            userService.edit(user);
+            dealerTokenRepository.delete(dealerToken);
+            return "activate";
         }
-        return userResponses;
+        return "token is deprecated";
     }
 }

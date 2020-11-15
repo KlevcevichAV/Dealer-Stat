@@ -1,45 +1,42 @@
 package com.dealerstat.controller;
 
 import com.dealerstat.entity.Game;
-import com.dealerstat.service.GameServiceImpl;
-import org.springframework.stereotype.Controller;
+import com.dealerstat.service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 public class GameController {
 
-    private final GameServiceImpl gameService;
+    private final GameService gameService;
 
-    public GameController(GameServiceImpl gameService) {
+    @Autowired
+    public GameController(GameService gameService) {
         this.gameService = gameService;
     }
 
     @GetMapping("/games")
-    public String getGames(Model model) {
-        model.addAttribute("games", gameService.getGames());
-        return "lists/games";
+    public List<Game> getGames() {
+        return gameService.findGames();
+
     }
 
     @PostMapping("/games/add")
-    public String addGame(@RequestBody Game game) {
-        gameService.addGame(game);
-        return "redirect:/games";
+    public Game addGame(@RequestBody Game game) {
+        return gameService.addGame(game);
     }
 
     @GetMapping("/games/{id}")
-    public String getGame(@PathVariable int id, Model model) {
-        model.addAttribute("game", gameService.getGame(id));
-        return "entity/game";
+    public Game getGame(@PathVariable int id, Model model) {
+        return gameService.findGame(id);
     }
 
     @GetMapping("/games/{id}/edit")
-    public String updateGame(@RequestBody Game game, @PathVariable int id) {
+    public Game updateGame(@RequestBody Game game, @PathVariable int id) {
         game.setId(id);
-        gameService.updateGame(game);
-        return "redirect:/games";
+        return gameService.updateGame(game);
     }
 }
