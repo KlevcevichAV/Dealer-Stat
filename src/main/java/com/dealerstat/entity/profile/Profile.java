@@ -80,4 +80,9 @@ public class Profile {
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
+
+    @Override
+    public boolean equals(Object profile) {
+        return ((Profile) profile).getUser().getId().equals(this.getUser().getId());
+    }
 }

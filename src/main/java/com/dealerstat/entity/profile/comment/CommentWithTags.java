@@ -8,15 +8,18 @@ public class CommentWithTags {
     private Comment comment;
     private Set<Game> tags;
 
+    public CommentWithTags() {
+    }
+
     public CommentWithTags(Comment comment, Set<Game> tags) {
         this.comment = comment;
         this.tags = tags;
     }
 
     public boolean checkingIfTagExists(Set<String> tags) {
-        for(Game game : this.tags){
-            for(String tag : tags){
-                if(game.getName().equals(tag)){
+        for (Game game : this.tags) {
+            for (String tag : tags) {
+                if (game.getName().equals(tag)) {
                     return true;
                 }
             }
@@ -39,4 +42,5 @@ public class CommentWithTags {
     public void setTags(Set<Game> tags) {
         this.tags = tags;
     }
+
 }
