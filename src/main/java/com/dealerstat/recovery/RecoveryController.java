@@ -10,9 +10,11 @@ import com.dealerstat.repository.UserRepository;
 import com.dealerstat.response.RecoveryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @RestController
@@ -29,7 +31,7 @@ public class RecoveryController {
     }
 
 
-    @GetMapping("/auth/forgot_password")
+    @PostMapping("/auth/forgot_password")
     public String sendMessage(@RequestBody String mail) {
         User user = userRepository.findByEmail(mail);
 
@@ -46,13 +48,14 @@ public class RecoveryController {
         return "Done";
     }
 
-    @GetMapping("/auth/reset")
+    @PostMapping("/auth/reset")
     public String reset(@RequestBody RecoveryResponse recoveryResponse) throws Exception {
         DealerToken dealerToken = dealerTokenRepository.findById(recoveryResponse.getCode()).get();
         if (Objects.isNull(dealerToken)) return "error";
 
         VerificationToken newVerificationToken = new VerificationToken();
         VerificationToken oldVerificationToken = new VerificationToken(dealerToken.getToken());
+
         if (newVerificationToken.checkToken(oldVerificationToken)) {
             User user = userRepository.findByEmail(dealerToken.getEmail());
             user.setPassword(Password.getSaltedHash(recoveryResponse.getPassword()));
@@ -65,11 +68,21 @@ public class RecoveryController {
 
     @GetMapping("/auth/check_code")
     public String checkCode(@RequestBody String code) {
-        DealerToken dealerToken = dealerTokenRepository.findById(code).get();
+        DealerToken dealerToken;
+        try {
+            dealerToken = dealerTokenRepository.findById(code).get();
+        }catch (NoSuchElementException exception){
+            return "There is no such code";
+        }
+
         VerificationToken newVerificationToken = new VerificationToken();
         VerificationToken oldVerificationToken = new VerificationToken(dealerToken.getToken());
+
         if (newVerificationToken.checkToken(oldVerificationToken)) {
             return code;
-        } else return "Non";
+        } else {
+            dealerTokenRepository.delete(dealerToken);
+            return "Code is deprecated";
+        }
     }
 }

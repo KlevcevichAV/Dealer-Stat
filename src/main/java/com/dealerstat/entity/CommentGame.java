@@ -1,14 +1,12 @@
 package com.dealerstat.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "comment_game")
 public class CommentGame {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "comment_id")
     private int commentId;
@@ -16,6 +14,11 @@ public class CommentGame {
     private int gameId;
 
     public CommentGame() {
+    }
+
+    public CommentGame(int commentId, int gameId) {
+        this.commentId = commentId;
+        this.gameId = gameId;
     }
 
     public int getCommentId() {

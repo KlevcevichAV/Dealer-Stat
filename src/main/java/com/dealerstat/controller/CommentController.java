@@ -1,7 +1,9 @@
 package com.dealerstat.controller;
 
+import com.dealerstat.entity.CommentGame;
 import com.dealerstat.entity.Game;
 import com.dealerstat.entity.profile.comment.CommentWithTags;
+import com.dealerstat.repository.CommentGameRepository;
 import com.dealerstat.repository.GameRepository;
 import com.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +16,14 @@ import java.util.Objects;
 @RestController
 public class CommentController {
     private final CommentService commentService;
-
     private final GameRepository gameRepository;
+    private final CommentGameRepository commentGameRepository;
 
     @Autowired
-    public CommentController(CommentService commentService, GameRepository gameRepository) {
+    public CommentController(CommentService commentService, GameRepository gameRepository, CommentGameRepository commentGameRepository) {
         this.commentService = commentService;
         this.gameRepository = gameRepository;
+        this.commentGameRepository = commentGameRepository;
     }
 
     @GetMapping("/dealer/{id}/comments")
@@ -45,7 +48,9 @@ public class CommentController {
         comment.getComment().setUserId(id);
         commentService.addComment(comment.getComment());
         for (Game game : comment.getTags()) {
-            if (Objects.isNull(gameRepository.findByName(game.getName()))) gameRepository.save(game);
+            Game temp = gameRepository.findByName(game.getName());
+            if (Objects.isNull(temp)) gameRepository.save(game);
+            commentGameRepository.save(new CommentGame(comment.getComment().getId(), temp.getId()));
         }
         return "create";
     }

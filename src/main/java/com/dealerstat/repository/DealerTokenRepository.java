@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DealerTokenRepository extends CrudRepository<DealerToken, String> {
     DealerToken findByEmail(String email);
-
-    DealerToken findByToken(String token);
 }

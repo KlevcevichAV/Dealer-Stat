@@ -74,6 +74,7 @@ public class ProfileService {
                 profiles.add(profile);
             }
         }
+        profiles.sort(this::compareTo);
         return profiles;
     }
 
@@ -86,6 +87,7 @@ public class ProfileService {
                 profiles.add(profile);
             }
         }
+        profiles.sort(this::compareTo);
         return profiles;
     }
 
@@ -97,6 +99,6 @@ public class ProfileService {
     }
 
     private int compareTo(Profile profileOne, Profile profileTwo) {
-        return Double.compare(profileOne.getAverageRatingForTop(), profileTwo.getAverageRatingForTop());
+        return Double.compare(profileTwo.getAverageRating(), profileOne.getAverageRating());
     }
 }

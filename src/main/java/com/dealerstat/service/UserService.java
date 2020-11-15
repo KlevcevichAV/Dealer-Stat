@@ -59,6 +59,7 @@ public class UserService {
         user.setCreatedAt(calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + '-' + calendar.get(Calendar.DAY_OF_MONTH));
         user.setRole(PREFIX + "DEALER");
         user.setPassword(Password.getSaltedHash(user.getPassword()));
+
         DealerToken dealerToken = new DealerToken(user.getEmail());
         String message = String.format("Hello, %s! \n" +
                 "Welcome to Dealer Stat. Please, visit next link: http://localhost:8080/activate/%s", user.getFirstName(), dealerToken.getToken());

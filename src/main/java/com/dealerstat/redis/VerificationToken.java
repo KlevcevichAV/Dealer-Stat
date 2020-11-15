@@ -38,6 +38,6 @@ public class VerificationToken {
     }
 
     public boolean checkToken(VerificationToken anotherToken) {
-        return (anotherToken.sum - this.sum) <= DAY;
+        return (this.sum - anotherToken.sum) <= DAY;
     }
 }

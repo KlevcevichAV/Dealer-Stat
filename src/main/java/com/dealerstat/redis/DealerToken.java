@@ -10,26 +10,12 @@ public class DealerToken implements Serializable {
     private String email;
     private String token;
 
-    public DealerToken() {
-    }
-
     public DealerToken(String email) {
         this.email = email;
         this.token = new VerificationToken().getToken();
         this.id = token;
     }
 
-    public DealerToken(String email, String token) {
-        this.email = email;
-        this.token = token;
-        this.id = token;
-    }
-
-    public DealerToken(String id, String email, String token) {
-        this.id = id;
-        this.email = email;
-        this.token = token;
-    }
 
     public String getEmail() {
         return email;
