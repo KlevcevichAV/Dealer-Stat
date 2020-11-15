@@ -10,10 +10,7 @@ import com.dealerstat.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CommentService {
@@ -40,6 +37,7 @@ public class CommentService {
 
     public CommentWithTags findComment(int dealerId, int id) {
         Comment comment = commentRepository.findByIdAndUserIdAndApproved(id, dealerId, true);
+        if (Objects.isNull(comment)) throw new RuntimeException("No comment");
         Set<Game> tags = new HashSet<>();
         for (CommentGame cg : commentGameRepository.findByCommentId(id)) {
             tags.add(gameRepository.findById(cg.getGameId()));
@@ -48,6 +46,8 @@ public class CommentService {
     }
 
     public void addComment(Comment comment) {
+        Calendar calendar = Calendar.getInstance();
+        comment.setCreatedAt(calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
         commentRepository.save(comment);
     }
 }

@@ -12,10 +12,10 @@ import com.dealerstat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 @Service
 public class AdminService {
 
@@ -33,21 +33,21 @@ public class AdminService {
     }
 
     public List<User> getUsersForApproved() {
-        return userRepository.findAllByApprovedAndRole(false, "DEALER");
+        return userRepository.findAllByApprovedAndRole(false, "ROLE_DEALER");
     }
 
     public User getUserForApproved(int id) {
-        return userRepository.findByIdAndRoleAndApproved(id, "DEALER", false);
+        return userRepository.findByIdAndRoleAndApproved(id, "ROLE_DEALER", false);
     }
 
-    public User approveDealer(int id){
+    public User approveDealer(int id) {
         User user = userRepository.findById(id);
         user.setApproved(true);
         userRepository.save(user);
         return user;
     }
 
-    public User declineDealer(int id){
+    public User declineDealer(int id) {
         User user = userRepository.findById(id);
         user.setApproved(false);
         userRepository.save(user);
@@ -61,20 +61,20 @@ public class AdminService {
     public CommentWithTags findCommentById(int id) {
         Comment comment = commentRepository.findById(id);
         Set<Game> tags = new HashSet<>();
-        for(CommentGame cg: commentGameRepository.findByCommentId(id)){
+        for (CommentGame cg : commentGameRepository.findByCommentId(id)) {
             tags.add(gameRepository.findById(cg.getGameId()));
         }
         return new CommentWithTags(comment, tags);
     }
 
-    public Comment approveComment(int id){
+    public Comment approveComment(int id) {
         Comment comment = commentRepository.findById(id);
         comment.setApproved(true);
         commentRepository.save(comment);
         return comment;
     }
 
-    public Comment declineComment(int id){
+    public Comment declineComment(int id) {
         Comment comment = commentRepository.findById(id);
         comment.setApproved(false);
         commentRepository.save(comment);
